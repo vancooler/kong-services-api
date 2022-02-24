@@ -79,11 +79,31 @@ Since it is a time limited project, chose to only implement e2e tests which in m
 $ npm run test:e2e
 ```
 
+## Assumptions and Considerations
+With the story grooming session and some afterwards thoughts, I had these assumptions and design in mind:
+
+1. There are 4 resources involved: Account, User, Service, and Version. Service and Version are the main features while Account and User are mainly for authentication and authorization context.
+
+2. Each user belongs to exactly one account and can only access to resources like services/versions under that account.
+
+3. Each Account may have up to 10,000 services. And each service can have up to 100 versions.
+
+4. Name of service or version can have no more than 1000 characters, while description can have 10,000 characters as maximum.
+
+5. Services list API should support a simple case-insensitive search functionality to match exact substring on name or description of a service.
+
+6. Services list API should order by updated timestamp in descending order.
+
+7. Pagination should be supported with default page size as 12. Offset pagination should be good enough as each account only has up to 10,000 services.
+
+8. Services list API should also response versions information including total number of versions and top 10 most recent updated versions. 
+
+
 ## Trade-offs Discussion
 
 1. Given the limited time to achieve the majority of the functionality, I focused on get services listing and get single service APIs with proper JWT authentication. No more time for resources writing part. Also authentication part only focused on getting JWT token and authentication with JWT part, related features like user registration, JWT token refresh can be considered as existing components or furture improvement.
 
-2. Only implement e2e tests which in my opinion provides highest ROI in testing pyramid when there are 0 tests. Unit tests should also be added if I have more time.
+2. Only implement e2e tests which in my opinion provides highest ROI in testing pyramid when there are no tests at all. Unit tests should also be added if I have more time.
 
 3. As it is a demo project, I commited code directly to master branch, will definitely not do that for real product repo. For similar reason, many other production required components are not taken into consideration here like CI/CD, cloud infrustrature, load balancing, observability(logging, metrics, alerts), etc.
 
@@ -94,4 +114,4 @@ $ npm run test:e2e
 6. During story grooming, we discussed about data size estimation on services and versions(10k services per account and 100 versions per service), but didn't talk how many accounts will there be in the whole system. Current single table in single db structure should be good at small scale like thousands of accounts. When the product gets popular and there are millions of accounts, DB could be a bottleneck and we need to consider db sharding by accounts groups.
 
 
-Any discuss or comments are welcome and appreciated.  
+Any discuss or comments are welcome and appreciated. :)  
