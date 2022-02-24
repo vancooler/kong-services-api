@@ -1,30 +1,7 @@
-<p align="center">
-  <a href="http://nestjs.com/" target="blank"><img src="https://nestjs.com/img/logo_text.svg" width="320" alt="Nest Logo" /></a>
-</p>
-
-[circleci-image]: https://img.shields.io/circleci/build/github/nestjs/nest/master?token=abc123def456
-[circleci-url]: https://circleci.com/gh/nestjs/nest
-  
-  <p align="center">A progressive <a href="http://nodejs.org" target="_blank">Node.js</a> framework for building efficient and scalable server-side applications.</p>
-    <p align="center">
-<a href="https://www.npmjs.com/~nestjscore" target="_blank"><img src="https://img.shields.io/npm/v/@nestjs/core.svg" alt="NPM Version" /></a>
-<a href="https://www.npmjs.com/~nestjscore" target="_blank"><img src="https://img.shields.io/npm/l/@nestjs/core.svg" alt="Package License" /></a>
-<a href="https://www.npmjs.com/~nestjscore" target="_blank"><img src="https://img.shields.io/npm/dm/@nestjs/common.svg" alt="NPM Downloads" /></a>
-<a href="https://circleci.com/gh/nestjs/nest" target="_blank"><img src="https://img.shields.io/circleci/build/github/nestjs/nest/master" alt="CircleCI" /></a>
-<a href="https://coveralls.io/github/nestjs/nest?branch=master" target="_blank"><img src="https://coveralls.io/repos/github/nestjs/nest/badge.svg?branch=master#9" alt="Coverage" /></a>
-<a href="https://discord.gg/G7Qnnhy" target="_blank"><img src="https://img.shields.io/badge/discord-online-brightgreen.svg" alt="Discord"/></a>
-<a href="https://opencollective.com/nest#backer" target="_blank"><img src="https://opencollective.com/nest/backers/badge.svg" alt="Backers on Open Collective" /></a>
-<a href="https://opencollective.com/nest#sponsor" target="_blank"><img src="https://opencollective.com/nest/sponsors/badge.svg" alt="Sponsors on Open Collective" /></a>
-  <a href="https://paypal.me/kamilmysliwiec" target="_blank"><img src="https://img.shields.io/badge/Donate-PayPal-ff3f59.svg"/></a>
-    <a href="https://opencollective.com/nest#sponsor"  target="_blank"><img src="https://img.shields.io/badge/Support%20us-Open%20Collective-41B883.svg" alt="Support us"></a>
-  <a href="https://twitter.com/nestframework" target="_blank"><img src="https://img.shields.io/twitter/follow/nestframework.svg?style=social&label=Follow"></a>
-</p>
-  <!--[![Backers on Open Collective](https://opencollective.com/nest/backers/badge.svg)](https://opencollective.com/nest#backer)
-  [![Sponsors on Open Collective](https://opencollective.com/nest/sponsors/badge.svg)](https://opencollective.com/nest#sponsor)-->
 
 ## Description
 
-[Nest](https://github.com/nestjs/nest) framework TypeScript starter repository.
+The application is built based on Nest framework TypeScript starter repository template for assignment described in [this page](https://docs.google.com/document/d/1wnZu4hu9RsH7COFtpa8af3pQy0NtOGhR54ajZxs61ZE/edit#heading=h.9zyuxgmou4f5).
 
 ## Installation
 
@@ -34,40 +11,85 @@ $ npm install
 
 ## Running the app
 
+###Setup
+
+#### Environment variables
+Need to provide database secret and JWT secret in .env file, something like this:
+
+```
+DB_NAME = database_name
+DB_PORT = 5432
+DB_HOST = localhost
+DB_USERNAME = username
+DB_PASSWORD = password
+DB_SYNC = true
+DB_LOG = true
+JWT_SECRET = secret_key
+```
+
+#### Data seeding
+
+To run the application locally with some data, chose to seed with some sql statements as the easiest way when there is no APIs for creating resources.
+
+Create a testing account 
+
+```sql
+INSERT INTO accounts (name) VALUES ('my org');
+```
+
+Create a testing user
+
+**NOTE:** Just for convenience of demo, there is a block of code in login logic to output encrypted password for seeding user data. 
+
+```sql
+INSERT INTO users (name, email, password, accountId) VALUES ('aaa', 'aa@aa.com', 'ENCRYPTED_SALT_PASSWORD_FROM_CODE_OUTPUT', 'ACCOUNT_ID_FROM_INSERTED_ACCOUNT');
+```
+
+Create some services
+
+```sql
+INSERT INTO services (name, description, account_id) VALUES ('service name', 'this is a description for service', 'ACCOUNT_ID_FROM_INSERTED_ACCOUNT');
+```
+
+Create some versions
+
+```sql
+INSERT INTO versions (name, description, service_id) VALUES ('version name', 'this is a description for version', 'SERVICE_ID_FROM_INSERTED_SERVICE');
+```
+
+
+### Running
+
 ```bash
 # development
 $ npm run start
 
 # watch mode
 $ npm run start:dev
-
-# production mode
-$ npm run start:prod
 ```
 
 ## Test
 
+Since it is a time limited project, chose to only implement e2e tests which in my opinion provides highest ROI in testing pyramid when there are 0 tests.
+
 ```bash
-# unit tests
-$ npm run test
-
-# e2e tests
+# run e2e tests
 $ npm run test:e2e
-
-# test coverage
-$ npm run test:cov
 ```
 
-## Support
+## Trade-offs Discussion
 
-Nest is an MIT-licensed open source project. It can grow thanks to the sponsors and support by the amazing backers. If you'd like to join them, please [read more here](https://docs.nestjs.com/support).
+1. Given the limited time to achieve the majority of the functionality, I focused on get services listing and get single service APIs with proper JWT authentication. No more time for resources writing part. Also authentication part only focused on getting JWT token and authentication with JWT part, related features like user registration, JWT token refresh can be considered as existing components or furture improvement.
 
-## Stay in touch
+2. Only implement e2e tests which in my opinion provides highest ROI in testing pyramid when there are 0 tests. Unit tests should also be added if I have more time.
 
-- Author - [Kamil Myśliwiec](https://twitter.com/kammysliwiec)
-- Website - [https://nestjs.com](https://nestjs.com/)
-- Twitter - [@nestframework](https://twitter.com/nestframework)
+3. As it is a demo project, I commited code directly to master branch, will definitely not do that for real product repo. For similar reason, many other production required components are not taken into consideration here like CI/CD, cloud infrustrature, load balancing, observability(logging, metrics, alerts), etc.
 
-## License
+4. Naming of `Service` resource. I feel it would increase communication cost in the long run as `Service` the word itself can be used for many things. As I don't more context around it, still choose to use it in code. In a real working environment, I would try to find a better term of it if possible.
 
-  Nest is [MIT licensed](https://github.com/nestjs/nest/blob/master/LICENSE).
+5. TypeOrm is new tool for me. It is covenient for some features. However, there are some features not supported. I put lots of time researching how to create GIN index on name/description columns for better performance on searching, but looks like TypeOrm doesn't support it. I think the only way is to add a sql migration to add the proper index, I will consider it as a future improvement point for sure.
+
+6. During story grooming, we discussed about data size estimation on services and versions(10k services per account and 100 versions per service), but didn't talk how many accounts will there be in the whole system. Current single table in single db structure should be good at small scale like thousands of accounts. When the product gets popular and there are millions of accounts, DB could be a bottleneck and we need to consider db sharding by accounts groups.
+
+
+Any discuss or comments are welcome and appreciated.  
