@@ -3,6 +3,8 @@
 
 The application is built based on Nest framework TypeScript starter repository template for assignment described in [this page](https://docs.google.com/document/d/1wnZu4hu9RsH7COFtpa8af3pQy0NtOGhR54ajZxs61ZE/edit#heading=h.9zyuxgmou4f5).
 
+A demo vedio can be found as `demo.mp4` in this repo.
+
 ## Installation
 
 ```bash

@@ -18,7 +18,6 @@ export class ServiceService {
 
   async getList(req: Request, user: Partial<User>): Promise<object> {
     const servicesQueryBuilder = await this.servicesQueryBuilder(req, user);
-
     const page: number = parseInt(req.query.page as any) || 1;
     const pageSize: number = parseInt(req.query.page_size as any) || 12;
 
@@ -28,8 +27,8 @@ export class ServiceService {
       .getMany();
     const serviceIds = services.map((service) => service.id);
     const total = serviceIds.length;
+    const data = total > 0 ? await this.servicesByIds(serviceIds) : [];
 
-    const data = await this.servicesByIds(serviceIds);
     return {
       data: data.map((service) =>
         classToPlain(service, { groups: ['listing'] }),
